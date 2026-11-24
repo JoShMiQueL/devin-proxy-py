@@ -69,7 +69,9 @@ def build_app(settings: Settings, auth: Auth, engine: Engine,
                 "id": uid,
                 "object": "model",
                 "created": int(time.time()),
-                "name": (cfg.name if cfg else uid.replace("swe-2-", "SWE-2 ").title()),
+                "name": (cfg.name if cfg else
+                         uid.replace("swe-2-1-", "SWE-2.1 ")
+                          .replace("swe-2-", "SWE-2 ").title()),
                 "owned_by": "devin",
                 "context_window": (cfg.context if cfg and cfg.context else 262144),
                 "max_tokens": 16384,
@@ -132,6 +134,31 @@ def build_app(settings: Settings, auth: Auth, engine: Engine,
                                                 "medium", "high", "xhigh",
                                                 "max"],
                 "wire_model": "swe-2-flash-high",
+            })
+        # swe-2.1 alias: one stable id for the five-effort 2.1 family
+        s21_cfg = cat.get("swe-2-1-high") if cat else None
+        if s21_cfg or "swe-2-1-high" in settings.allowed_models:
+            data.insert(2, {
+                "id": "swe-2.1",
+                "object": "model",
+                "created": int(time.time()),
+                "name": "SWE-2.1",
+                "owned_by": "devin",
+                "context_window": (s21_cfg.context
+                                   if s21_cfg and s21_cfg.context
+                                   else 262144),
+                "max_tokens": 16384,
+                "reasoning": {
+                    "supported_efforts": ["none", "minimal", "low", "medium",
+                                          "high", "xhigh", "max"],
+                    "default_effort": "high",
+                    "default_enabled": True,
+                    "mandatory": False,
+                },
+                "supported_reasoning_efforts": ["none", "minimal", "low",
+                                                "medium", "high", "xhigh",
+                                                "max"],
+                "wire_model": "swe-2-1-high",
             })
         return {"object": "list", "data": data}
 

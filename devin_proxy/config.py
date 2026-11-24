@@ -78,9 +78,10 @@ class Settings(BaseSettings):
     # how many trailing turns to always keep when pruning history
     prune_keep_turns: int = 12
 
-    # model allowlist: base SWE-2 lanes + the Flash family — the lanes that
-    # run free of credit charge on Pro+ plans. Every other catalog uid
-    # (Claude/GPT/Gemini/Grok/Kimi/GLM/... and the swe-2 *-lightning
+    # model allowlist: base SWE-2 lanes + the Flash family + the SWE-2.1
+    # lanes (five effort levels, free promo through 2026-12-09) — the lanes
+    # that run free of credit charge on Pro+ plans. Every other catalog uid
+    # (Claude/GPT/Gemini/Grok/Kimi/GLM/... and the *-lightning
     # fast-mode variants) bills Devin credits when routed.
     allowed_models: tuple[str, ...] = (
         "swe-2-medium",
@@ -89,6 +90,11 @@ class Settings(BaseSettings):
         "swe-2-flash-medium",
         "swe-2-flash-high",
         "swe-2-flash-max",
+        "swe-2-1-low",
+        "swe-2-1-medium",
+        "swe-2-1-high",
+        "swe-2-1-xhigh",
+        "swe-2-1-max",
     )
     # allow_paid: when True, ANY uid present in the live upstream catalog is
     # routable — including credit-billed models. Use knowingly.

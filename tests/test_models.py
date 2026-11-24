@@ -2,6 +2,7 @@
     ALL_TIERS,
     SWE2_FLASH_TIERS,
     SWE2_TIERS,
+    SWE21_TIERS,
     resolve_model,
 )
 
@@ -46,6 +47,30 @@ def test_flash_explicit_tier():
     assert resolve_model("swe2-flash-high") == "swe-2-flash-high"
 
 
+def test_swe21_family():
+    assert resolve_model("swe-2.1") == "swe-2-1-high"
+    assert resolve_model("swe-2-1") == "swe-2-1-high"
+    assert resolve_model("swe2.1") == "swe-2-1-high"
+    assert resolve_model("swe-2.1", "max") == "swe-2-1-max"
+    assert resolve_model("swe-2.1", "xhigh") == "swe-2-1-xhigh"
+    assert resolve_model("swe-2.1", "medium") == "swe-2-1-medium"
+    for e in ("low", "minimal", "none", "off"):
+        assert resolve_model("swe-2.1", e) == "swe-2-1-low"
+
+
+def test_swe21_explicit_tier():
+    assert resolve_model("swe-2-1-low") == "swe-2-1-low"
+    assert resolve_model("swe-2-1-xhigh") == "swe-2-1-xhigh"
+    assert resolve_model("swe-2-1-max") == "swe-2-1-max"
+    assert resolve_model("swe2-1-high") == "swe-2-1-high"
+    assert resolve_model("swe-2.1-high") == "swe-2-1-high"
+
+
+def test_swe21_lightning_not_routed():
+    assert "lightning" not in resolve_model("swe-2.1-lightning", "max")
+    assert resolve_model("swe-2-1-max-lightning") in SWE21_TIERS
+
+
 def test_lightning_not_routed():
     # lightning lanes bill fast-mode credits — never resolve to them
     assert resolve_model("swe-2-lightning") in SWE2_TIERS
@@ -63,7 +88,8 @@ def test_allowed_models_restricts():
 
 
 def test_all_tiers_contains_everything():
-    assert set(SWE2_TIERS) | set(SWE2_FLASH_TIERS) <= set(ALL_TIERS)
+    assert set(SWE2_TIERS) | set(SWE2_FLASH_TIERS) | set(SWE21_TIERS) \
+        <= set(ALL_TIERS)
 
 
 def test_allow_paid_setting():

@@ -367,8 +367,8 @@ def cmd_models(args) -> int:
         print("free lanes (routed, no credit charge):")
     for uid in s.allowed_models:
         print(_line(uid, cat.get(uid), "*"))
-    print("  (also: 'swe-2-flash' -> swe-2-flash-high; "
-          "'swe-2-flash' + reasoning_effort picks the tier)")
+    print("  (also: 'swe-2-flash' -> swe-2-flash-high, 'swe-2.1' -> "
+          "swe-2-1-high; either + reasoning_effort picks the tier)")
     n = len(list(cat))
     if getattr(args, "all", False):
         print(f"\nupstream catalog ({n} configs):")

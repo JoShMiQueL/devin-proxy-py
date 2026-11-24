@@ -16,10 +16,32 @@ from ..transport.proto import Message, fields
 SWE2_TIERS = ("swe-2-medium", "swe-2-high", "swe-2-max")
 #: SWE-2 Flash lanes — the fast strawberry-pancake family.
 SWE2_FLASH_TIERS = ("swe-2-flash-medium", "swe-2-flash-high", "swe-2-flash-max")
+#: SWE-2.1 lanes — five effort levels (low/medium/high/xhigh/max), no flash.
+# Bare "swe-2-1" is a real catalog uid but duplicates medium; not routed.
+SWE21_TIERS = ("swe-2-1-low", "swe-2-1-medium", "swe-2-1-high",
+               "swe-2-1-xhigh", "swe-2-1-max")
 
 #: every lane we know how to route, in stable order.
 # Lightning lanes are intentionally excluded: they bill fast-mode credits.
-ALL_TIERS = SWE2_TIERS + SWE2_FLASH_TIERS
+ALL_TIERS = SWE2_TIERS + SWE2_FLASH_TIERS + SWE21_TIERS
+
+#: effort word -> index inside a family tuple. Families are ordered
+#: cheapest-to-strongest; efforts not in the family map clamp to the
+#: nearest defined level below, or the family default when below all.
+_EFFORT_RANK = {
+    "off": 0, "none": 0, "minimal": 0,
+    "low": 1, "medium": 2, "high": 3,
+    "xhigh": 4, "max": 5,
+}
+
+
+def _family_tiers(m: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """(family tiers, effort-name tuple) for a model id."""
+    if "flash" in m:
+        return SWE2_FLASH_TIERS, ("medium", "high", "max")
+    if "2-1" in m or "2.1" in m or "2p1" in m:
+        return SWE21_TIERS, ("low", "medium", "high", "xhigh", "max")
+    return SWE2_TIERS, ("medium", "high", "max")
 
 
 def metadata(api_key: str, jwt: str = "", version: str = "",
@@ -108,26 +130,33 @@ def resolve_model(model: str, effort: str = "",
     """Map an OpenAI model id + reasoning_effort to a wire uid.
 
     Anything outside `allowed` falls back to `default`. A bare "flash" /
-    "swe-2-flash" id lands on the flash-high lane. Effort picks a tier
-    inside whatever family the model id selected (default: the base
-    family).
+    "swe-2-flash" id lands on the flash-high lane; "swe-2-1"/"swe-2.1"
+    selects the 2.1 family. Effort picks a tier inside whatever family
+    the model id selected (default: the base family), clamping to the
+    nearest defined level when the family lacks that effort name.
     """
     m = (model or "").strip().lower()
     e = (effort or "").strip().lower()
 
     # explicit lane always wins
     for cand in allowed:
-        if m == cand or m == cand.replace("swe-2-", "swe2-"):
+        if (m == cand or m == cand.replace("swe-2-", "swe2-")
+                or m == cand.replace("swe-2-1-", "swe-2.1-")):
             return cand
 
-    tiers = SWE2_FLASH_TIERS if "flash" in m else SWE2_TIERS
+    tiers, names = _family_tiers(m)
 
-    if e in ("max", "xhigh"):
-        tier = tiers[2]
-    elif e in ("medium", "low", "minimal", "none", "off"):
-        tier = tiers[0]
+    if e in _EFFORT_RANK:
+        rank = _EFFORT_RANK[e]
+        # nearest defined level by rank distance; ties resolve upward so an
+        # effort the family lacks (xhigh on 3-tier lanes, low too) lands on
+        # the stronger neighbor
+        idx = min(range(len(names)),
+                  key=lambda i: (abs(_EFFORT_RANK[names[i]] - rank),
+                                 -_EFFORT_RANK[names[i]]))
+        tier = tiers[idx]
     else:
-        tier = (default if default in tiers else tiers[1])
+        tier = (default if default in tiers else tiers[len(tiers) // 2])
 
     return tier if tier in allowed else (
         default if default in allowed else allowed[0] if allowed else tier)

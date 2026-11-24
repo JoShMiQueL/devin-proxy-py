@@ -5,9 +5,10 @@ OpenAI-compatible localhost proxy over the Devin SWE-2 backend
 system-override injection + refusal guard with temperature-ladder retries.
 Routed lanes: `swe-2-medium`, `swe-2-high`, `swe-2-max` + the Flash family
 (`swe-2-flash-medium/high/max` — released 2026-11-04, ~200 tok/s vs 60,
-one-fifth the credit cost, free through 2026-11-30; use for sub-agents).
-Lightning lanes and every non-SWE2 uid bill fast-mode credits — never
-route them. `devin-proxy models` lists routed lanes + credit cost;
+one-fifth the credit cost, free through 2026-11-30; use for sub-agents) +
+the SWE-2.1 family (`swe-2-1-low/medium/high/xhigh/max` — five effort
+levels, free promo through 2026-12-09, 6.0 cr/run after). Lightning lanes
+and every non-SWE2 uid bill fast-mode credits — never route them. `devin-proxy models` lists routed lanes + credit cost;
 `devin-proxy models --all` dumps the full upstream catalog.
 
 ## Layout

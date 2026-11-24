@@ -41,9 +41,9 @@ def dump(b, depth=0, max_depth=6):
 
 async def main():
     s = load_settings()
-    auth = Auth(s.backend, s.credentials, s.client_version, s.client_channel)
+    auth = Auth(s.backend, client_version=s.client_version)
     body = Message().msg(1, Message(metadata(
-        auth.api_key(), "", s.client_version, s.client_channel))).body
+        auth.api_key(), "", s.client_version))).body
     c = ConnectClient(s.backend, timeout=30)
     raw = await c.unary(CFG_PATH, body)
     await c.aclose()
