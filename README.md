@@ -1,5 +1,11 @@
 # devin-proxy
 
+> **Archived — superseded.** This Python implementation is kept for
+> reference. The active proxy is the TypeScript
+> [`devin-proxy`](https://github.com/JoShMiQueL/devin-proxy) (npm
+> `devin-proxy`), which shares its pipeline with `devin-engine` — one
+> implementation to maintain instead of two drift-prone ports.
+
 Uncensored OpenAI-compatible localhost proxy over the **Devin** SWE-2
 backend (`server.codeium.com`, Connect-RPC / protobuf).
 
