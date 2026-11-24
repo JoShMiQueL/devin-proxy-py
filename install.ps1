@@ -1,8 +1,8 @@
 # devin-proxy installer — Windows
-#   irm https://raw.githubusercontent.com/JoShMiQueL/devin-proxy/master/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/JoShMiQueL/devin-proxy-py/main/install.ps1 | iex
 # Env knobs: DEVIN_PROXY_PREFIX, DEVIN_PROXY_REF (default: latest release)
 $ErrorActionPreference = 'Stop'
-$repo   = 'JoShMiQueL/devin-proxy'
+$repo   = 'JoShMiQueL/devin-proxy-py'
 $prefix = if ($env:DEVIN_PROXY_PREFIX) { $env:DEVIN_PROXY_PREFIX } else { "$env:LOCALAPPDATA\devin-proxy" }
 $bindir = "$prefix\bin"
 $ref    = $env:DEVIN_PROXY_REF

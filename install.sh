@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # devin-proxy installer — Linux/macOS
-#   curl -fsSL https://raw.githubusercontent.com/JoShMiQueL/devin-proxy/master/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/JoShMiQueL/devin-proxy-py/main/install.sh | bash
 # Env knobs: DEVIN_PROXY_PREFIX, DEVIN_PROXY_BINDIR, DEVIN_PROXY_REF (default: latest release)
 set -euo pipefail
 
-REPO="JoShMiQueL/devin-proxy"
+REPO="JoShMiQueL/devin-proxy-py"
 PREFIX="${DEVIN_PROXY_PREFIX:-$HOME/.local/share/devin-proxy}"
 BINDIR="${DEVIN_PROXY_BINDIR:-$HOME/.local/bin}"
 REF="${DEVIN_PROXY_REF:-}"

@@ -14,7 +14,7 @@ from pathlib import Path
 from . import __version__
 from .config import load_settings
 
-REPO = "JoShMiQueL/devin-proxy"
+REPO = "JoShMiQueL/devin-proxy-py"
 API = f"https://api.github.com/repos/{REPO}"
 DEFAULT_NAME = "default"
 

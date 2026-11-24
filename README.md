@@ -32,20 +32,20 @@ One-liners — install the latest release into an isolated venv:
 
 ```bash
 # Linux / macOS / WSL
-curl -fsSL https://raw.githubusercontent.com/JoShMiQueL/devin-proxy/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/JoShMiQueL/devin-proxy-py/main/install.sh | bash
 ```
 
 ```powershell
 # Windows
-irm https://raw.githubusercontent.com/JoShMiQueL/devin-proxy/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/JoShMiQueL/devin-proxy-py/main/install.ps1 | iex
 ```
 
 Or with the usual tooling:
 
 ```bash
-uv tool install git+https://github.com/JoShMiQueL/devin-proxy   # uv
-pipx install git+https://github.com/JoShMiQueL/devin-proxy      # pipx
-pip install devin-proxy --index-url https://github.com/JoShMiQueL/devin-proxy/releases/latest/download/  # wheel, manual
+uv tool install git+https://github.com/JoShMiQueL/devin-proxy-py   # uv
+pipx install git+https://github.com/JoShMiQueL/devin-proxy-py      # pipx
+pip install devin-proxy --index-url https://github.com/JoShMiQueL/devin-proxy-py/releases/latest/download/  # wheel, manual
 ```
 
 While the repo is private the installers need a GitHub token —
@@ -309,3 +309,17 @@ pytest
 CI runs ruff + pytest on push (`.github/workflows/ci.yml`).
 
 MIT.
+
+## Ecosystem
+
+Part of the `devin-*` stack — this is the original Python proxy, kept as
+the reference implementation. The TypeScript port (npm `devin-proxy`)
+lives at [JoShMiQueL/devin-proxy](https://github.com/JoShMiQueL/devin-proxy)
+and shares its pipeline with two npm libraries:
+
+| Package | Role |
+| --- | --- |
+| `devin-core` | Connect-RPC wire, auth, PKCE, catalog |
+| `devin-engine` | guarded-retry pipeline (guard, override, sanitize, resolve) — ported from `devin_proxy/{pipeline,jailbreak,models}` |
+| `devin-proxy` (npm) | this proxy, TypeScript |
+| `devin-proxy-py` | this repo — Python original |
